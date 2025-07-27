@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🔍 Detetive Químico: Química Orgânica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #2E2E2E;
+      color: #FFF;
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #333;
+      padding: 20px;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: none;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .resposta {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    #voltarBtn {
+      display: none;
+      background-color: #FF5722;
+    }
+    #autor {
+      position: fixed;
+      bottom: 8px;
+      right: 10px;
+      font-size: 10px;
+      color: #aaa;
+      user-select: none;
+    }
+    h1 {
+      margin-bottom: 0;
+    }
+    p.subtitle {
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Detetive Químico: Química Orgânica</h1>
+  <p class="subtitle">Seja bem-vindo ao detetive químico, responda as perguntas de forma certa e seja o ganhador!<br>(Contém 56 cartas.)</p>
+
+  <div id="card-container"></div>
+  <button onclick="sortearCarta()" id="sortearBtn">Sortear Carta</button>
+  <button onclick="voltarInicio()" id="voltarBtn">Voltar ao Início</button>
+  <div id="autor">Programador: Gabriel F. M. Cardoso</div>
+
+  <script>
+    const perguntas = [
+      { pergunta: "Qual elemento é base das cadeias carbônicas?", opcoes: ["Hidrogênio", "Oxigênio", "Carbono", "Nitrogênio"], correta: 2 },
+      { pergunta: "O que é uma cadeia carbônica aberta?", opcoes: ["Uma cadeia que forma um anel", "Uma cadeia sem átomos de carbono", "Uma cadeia linear ou ramificada sem fechar o ciclo", "Uma cadeia com oxigênio"], correta: 2 },
+      { pergunta: "O que caracteriza o carbono tetravalente?", opcoes: ["Liga-se a um átomo apenas", "Liga-se com 4 elétrons e 4 átomos", "É instável", "Tem ligação tripla com oxigênio"], correta: 1 },
+      { pergunta: "Qual grupo funcional caracteriza os álcoois?", opcoes: ["-OH", "-COOH", "-NH2", "-CHO"], correta: 0 },
+      { pergunta: "Qual é o nome do hidrocarboneto com uma ligação dupla?", opcoes: ["Alcano", "Alceno", "Alquino", "Aldeído"], correta: 1 },
+      { pergunta: "O que significa 'ramificado' em uma cadeia carbônica?", opcoes: ["Uma cadeia linear", "Uma cadeia com ramificações laterais", "Uma cadeia cíclica", "Uma cadeia com átomos de oxigênio"], correta: 1 },
+      { pergunta: "Qual destes é um alcano?", opcoes: ["Eteno", "Propeno", "Butano", "Acetileno"], correta: 2 },
+      { pergunta: "Qual a fórmula geral dos alcanos?", opcoes: ["CnH2n", "CnH2n+2", "CnH2n-2", "CnH2n-6"], correta: 1 },
+      { pergunta: "Qual elemento não faz parte da química orgânica tradicional?", opcoes: ["Carbono", "Hidrogênio", "Oxigênio", "Ferro"], correta: 3 },
+      { pergunta: "O que é uma função orgânica?", opcoes: ["Uma cadeia de carbono", "Um grupo de átomos que confere propriedades específicas", "Um tipo de átomo", "Um tipo de ligação"], correta: 1 },
+      { pergunta: "Qual o grupo funcional dos ésteres?", opcoes: ["-COOH", "-COOR", "-OH", "-NH2"], correta: 1 },
+      { pergunta: "Qual é a principal característica dos compostos aromáticos?", opcoes: ["Ligação simples entre carbonos", "Estrutura em anel com ligações conjugadas", "Possuem oxigênio", "São todos líquidos"], correta: 1 },
+      { pergunta: "O que é isomeria?", opcoes: ["Mesma fórmula molecular, diferentes estruturas", "Diferentes fórmulas moleculares", "Mesma estrutura, diferentes fórmulas", "Reação química"], correta: 0 },
+      { pergunta: "Qual é o número máximo de ligações que um átomo de carbono pode formar?", opcoes: ["2", "3", "4", "5"], correta: 2 },
+      { pergunta: "O que é uma cadeia cíclica?", opcoes: ["Uma cadeia aberta", "Uma cadeia fechada em anel", "Uma cadeia ramificada", "Uma cadeia com heteroátomos"], correta: 1 },
+      { pergunta: "Qual grupo funcional está presente nos aldeídos?", opcoes: ["-CHO", "-COOH", "-OH", "-NH2"], correta: 0 },
+      { pergunta: "Qual grupo funcional está presente nos ácidos carboxílicos?", opcoes: ["-COOH", "-OH", "-NH2", "-COOR"], correta: 0 },
+      { pergunta: "O que é um grupo heteroátomo?", opcoes: ["Átomo de carbono", "Átomo diferente de carbono e hidrogênio", "Ligação dupla", "Ligação simples"], correta: 1 },
+      { pergunta: "Qual é o nome do hidrocarboneto com uma ligação tripla?", opcoes: ["Alcano", "Alceno", "Alquino", "Aldeído"], correta: 2 },
+      { pergunta: "O que significa 'insaturado' em química orgânica?", opcoes: ["Possui ligações duplas ou triplas", "Possui apenas ligações simples", "É sólido", "É líquido"], correta: 0 },
+      { pergunta: "Qual a fórmula geral dos alcenos?", opcoes: ["CnH2n+2", "CnH2n", "CnH2n-2", "CnHn"], correta: 1 },
+      { pergunta: "Qual a fórmula geral dos alquinos?", opcoes: ["CnH2n+2", "CnH2n", "CnH2n-2", "CnHn"], correta: 2 },
+      { pergunta: "O que caracteriza um álcool primário?", opcoes: ["OH ligado a um carbono ligado a um carbono", "OH ligado a um carbono ligado a dois hidrogênios", "OH ligado a um carbono ligado a três hidrogênios", "OH ligado a um carbono ligado a um hidrogênio"], correta: 1 },
+      { pergunta: "O que é uma reação de substituição?", opcoes: ["Troca de átomos ou grupos em uma molécula", "Quebra de uma molécula em duas", "União de duas moléculas", "Mudança de estado físico"], correta: 0 },
+      { pergunta: "Qual o grupo funcional dos éteres?", opcoes: ["-O-", "-OH", "-COOH", "-NH2"], correta: 0 },
+      { pergunta: "Qual é a principal característica dos compostos fenóis?", opcoes: ["Possuem grupo -OH ligado a anel aromático", "São álcoois simples", "Possuem dupla ligação", "São ácidos carboxílicos"], correta: 0 },
+      { pergunta: "Qual a principal diferença entre aldeídos e cetonas?", opcoes: ["Aldeídos possuem grupo -CHO na extremidade da cadeia, cetonas no meio", "Aldeídos são sólidos, cetonas líquidos", "Aldeídos não possuem oxigênio", "Cetonas possuem grupo -OH"], correta: 0 },
+      { pergunta: "Qual é o nome do grupo funcional -NH2?", opcoes: ["Ácido carboxílico", "Amina", "Álcool", "Éster"], correta: 1 },
+      { pergunta: "O que são hidrocarbonetos?", opcoes: ["Compostos formados por carbono e hidrogênio", "Compostos formados por carbono e oxigênio", "Compostos formados por hidrogênio e oxigênio", "Compostos formados por carbono, hidrogênio e nitrogênio"], correta: 0 },
+      { pergunta: "Qual destes é um exemplo de alcano?", opcoes: ["Etano", "Eteno", "Acetileno", "Benzeno"], correta: 0 },
+      { pergunta: "O que é uma reação de adição?", opcoes: ["União de duas moléculas com quebra de ligação dupla ou tripla", "Substituição de átomos", "Quebra da molécula", "Oxidação"], correta: 0 },
+      { pergunta: "Qual é o principal uso dos ésteres?", opcoes: ["Solventes e fragrâncias", "Combustíveis", "Medicamentos", "Fertilizantes"], correta: 0 },
+      { pergunta: "Qual é o nome do composto com fórmula C2H2?", opcoes: ["Eteno", "Acetileno", "Etano", "Metano"], correta: 1 },
+      { pergunta: "Qual o nome do composto C6H6?", opcoes: ["Benzeno", "Ciclohexano", "Hexano", "Eteno"], correta: 0 },
+      { pergunta: "O que é um radical em química orgânica?", opcoes: ["Grupo de átomos ligados a uma cadeia principal", "Molécula completa", "Ligação dupla", "Ligação tripla"], correta: 0 },
+      { pergunta: "Qual o tipo de ligação predominante nos alcanos?", opcoes: ["Ligação simples", "Ligação dupla", "Ligação tripla", "Ligação iônica"], correta: 0 },
+      { pergunta: "O que é uma reação de eliminação?", opcoes: ["Remoção de átomos ou grupos para formar dupla ligação", "Adição de átomos", "Substituição", "Oxidação"], correta: 0 },
+      { pergunta: "Qual é o nome do grupo funcional -COOH?", opcoes: ["Álcool", "Ácido carboxílico", "Amina", "Éster"], correta: 1 },
+      { pergunta: "Qual é o nome do grupo funcional -CHO?", opcoes: ["Aldeído", "Cetona", "Álcool", "Éter"], correta: 0 },
+      { pergunta: "Qual dos seguintes é um exemplo de alceno?", opcoes: ["Eteno", "Etano", "Acetileno", "Metano"], correta: 0 },
+      { pergunta: "O que significa 'hidrofílico'?", opcoes: ["Afim de água", "Repelente de água", "Solúvel em óleo", "Não solúvel em água"], correta: 0 },
+      { pergunta: "Qual destes grupos é polar?", opcoes: ["-CH3", "-OH", "-C2H5", "-CH2CH3"], correta: 1 },
+      { pergunta: "Qual é o nome do composto C3H8?", opcoes: ["Propano", "Propeno", "Propenal", "Propanol"], correta: 0 },
+      { pergunta: "Qual é o nome do composto com fórmula C4H10?", opcoes: ["Butano", "Buteno", "Butino", "Butanol"], correta: 0 },
+      { pergunta: "O que caracteriza um éster?", opcoes: ["Grupo funcional -COOR", "Grupo funcional -OH", "Grupo funcional -NH2", "Grupo funcional -COOH"], correta: 0 },
+      { pergunta: "Qual é a função do grupo hidroxila (-OH)?", opcoes: ["Caracteriza álcoois", "Caracteriza ésteres", "Caracteriza aldeídos", "Caracteriza cetonas"], correta: 0 },
+      { pergunta: "Qual é o tipo de isomeria em que as moléculas possuem mesma fórmula molecular, mas diferentes arranjos espaciais?", opcoes: ["Isomeria espacial", "Isomeria plana", "Isomeria funcional", "Isomeria de cadeia"], correta: 0 },
+      { pergunta: "Qual é o nome do hidrocarboneto aromático mais simples?", opcoes: ["Benzeno", "Eteno", "Acetileno", "Metano"], correta: 0 },
+      { pergunta: "O que é um alcano?", opcoes: ["Hidrocarboneto saturado", "Hidrocarboneto insaturado", "Composto com grupo funcional OH", "Composto com ligação dupla"], correta: 0 },
+      { pergunta: "O que caracteriza uma cetona?", opcoes: ["Grupo carbonila ligado a dois carbonos", "Grupo carbonila ligado a um hidrogênio", "Grupo hidroxila", "Grupo amino"], correta: 0 },
+      { pergunta: "Qual o nome do grupo funcional -NH2?", opcoes: ["Amina", "Amida", "Álcool", "Cetona"], correta: 0 },
+      { pergunta: "Qual é o principal composto do gás natural?", opcoes: ["Metano", "Etano", "Propano", "Butano"], correta: 0 },
+      { pergunta: "Qual o nome do processo de separação de misturas por diferença de ponto de ebulição?", opcoes: ["Destilação", "Filtração", "Decantação", "Cromatografia"], correta: 0 },
+      { pergunta: "Qual é a característica principal dos compostos orgânicos?", opcoes: ["Presença de carbono", "Presença de oxigênio", "Presença de ferro", "Ser metálico"], correta: 0 },
+      { pergunta: "Qual é o nome do isômero que difere na posição da cadeia?", opcoes: ["Isomeria de posição", "Isomeria de cadeia", "Isomeria espacial", "Isomeria funcional"], correta: 0 },
+      { pergunta: "O que é uma ligação dupla?", opcoes: ["Ligação entre dois átomos com 2 pares de elétrons compartilhados", "Ligação entre dois átomos com 1 par de elétrons", "Ligação iônica", "Ligação metálica"], correta: 0 }
+    ];
+
+    let perguntasRestantes = [...perguntas];
+
+    function sortearCarta() {
+      if (perguntasRestantes.length === 0) {
+        alert("Você respondeu todas as cartas corretamente!");
+        document.getElementById("sortearBtn").style.display = "none";
+        return;
+      }
+
+      document.getElementById("voltarBtn").style.display = "none";
+      const container = document.getElementById("card-container");
+      container.innerHTML = "";
+
+      const indice = Math.floor(Math.random() * perguntasRestantes.length);
+      const carta = perguntasRestantes[indice];
+
+      const cardDiv = document.createElement("div");
+      cardDiv.className = "card";
+
+      const perguntaEl = document.createElement("p");
+      perguntaEl.textContent = carta.pergunta;
+      cardDiv.appendChild(perguntaEl);
+
+      carta.opcoes.forEach((opcao, idx) => {
+        const botao = document.createElement("button");
+        botao.textContent = opcao;
+        botao.onclick = () => verificarResposta(idx, carta.correta, cardDiv, indice);
+        cardDiv.appendChild(botao);
+      });
+
+      const respostaEl = document.createElement("div");
+      respostaEl.className = "resposta";
+      cardDiv.appendChild(respostaEl);
+
+      container.appendChild(cardDiv);
+      cardDiv.style.display = "block";
+
+      document.getElementById("sortearBtn").style.display = "none";
+    }
+
+    function verificarResposta(escolhida, correta, cardDiv, indice) {
+      const respostaEl = cardDiv.querySelector(".resposta");
+      if (escolhida === correta) {
+        respostaEl.textContent = "✅ Resposta correta!";
+        perguntasRestantes.splice(indice, 1);
+        setTimeout(() => {
+          cardDiv.style.display = "none";
+          document.getElementById("card-container").innerHTML = "";
+          document.getElementById("sortearBtn").style.display = "inline-block";
+        }, 1500);
+      } else {
+        respostaEl.textContent = "❌ Resposta incorreta!";
+        document.getElementById("voltarBtn").style.display = "inline-block";
+      }
+    }
+
+    function voltarInicio() {
+      document.getElementById("card-container").innerHTML = "";
+      document.getElementById("sortearBtn").style.display = "inline-block";
+      document.getElementById("voltarBtn").style.display = "none";
+    }
+  </script>
+</body>
+</html>
